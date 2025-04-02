@@ -15,7 +15,7 @@ import { clearCart } from "../../redux/cart/slice";
 
 export function Checkout() {
   const [isFormValid, setIsFormValid] = useState(false);
-  const paymentMethod = useSelector((state: RootState) => state.paymentMethod);
+  const paymentMethod = useSelector((state: RootState) => state.paymentMethod?.paymentMethod || "");
   const address = useSelector((state: RootState) => state.address);
   const { products } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export function Checkout() {
     setIsFormValid(valid);
   };
 
-  const handleCreateOrder = () => {
+  const validateOrder = () => {
     if (
       !isFormValid ||
       !address.zipCode ||
@@ -44,15 +44,20 @@ export function Checkout() {
       !address.state
     ) {
       alert("Por favor, preencha todos os campos do endereço.");
-      return;
-    } else if (products.length === 0) {
-      alert("Por favor, adicione itens ao carrinho.");
-      return;
-    } else if (!paymentMethod) {
-      alert("Por favor, selecione a forma de pagamento.");
-      return;
+      return false;
     }
+    if (products.length === 0) {
+      alert("Por favor, adicione itens ao carrinho.");
+      return false;
+    }
+    if (!paymentMethod || typeof paymentMethod !== "string") {
+      alert("Por favor, selecione a forma de pagamento.");
+      return false;
+    }
+    return true;
+  };
 
+  const handleCreateOrder = () => {
     const order = {
       products,
       address,
@@ -64,21 +69,13 @@ export function Checkout() {
     const previousOrders = JSON.parse(localStorage.getItem("orders") || "[]");
 
     previousOrders.push(order);
-
     localStorage.setItem("orders", JSON.stringify(previousOrders));
-
     dispatch(clearCart());
-
     navigate("/confirmed");
   };
 
   const sendOrderToWhatsApp = () => {
     const telefone = "558597422142";
-
-    const formaPagamento =
-      typeof paymentMethod === "string"
-        ? paymentMethod
-        : paymentMethod.paymentMethod || "Não informado";
 
     const endereco =
       `# *Endereço de entrega:*\n` +
@@ -101,7 +98,7 @@ export function Checkout() {
       `${endereco}\n` +
       `# *Itens do Pedido:*\n${itensPedido}\n` +
       `# *Frete:* R$ ${valueDelivery.toFixed(2)}\n` +
-      `# *Forma de Pagamento:* ${formaPagamento}\n` +
+      `# *Forma de Pagamento:* ${paymentMethod}\n` +
       `# *Total:* R$ ${totalValue.toFixed(2)}\n\n` +
       `Pode confirmar a disponibilidade?`;
 
@@ -110,6 +107,13 @@ export function Checkout() {
     )}`;
 
     window.open(url, "_blank");
+  };
+
+  const handleOrder = () => {
+    if (!validateOrder()) return;
+
+    handleCreateOrder();
+    sendOrderToWhatsApp();
   };
 
   return (
@@ -122,11 +126,10 @@ export function Checkout() {
       </CheckoutAreaForm>
 
       <CheckoutAreaPayments>
-        <h3>Cafés selecionados</h3>
+        <h3>Plantas selecionadas</h3>
         <CartTotalPayments
           onConfirmOrder={() => {
-            handleCreateOrder();
-            sendOrderToWhatsApp();
+            handleOrder();
           }}
           valueProducts={valueProducts}
           valueDelivery={valueDelivery}
