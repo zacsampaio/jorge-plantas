@@ -14,11 +14,11 @@ export const HeaderHomeContainer = styled.div`
     width: 100%;
     max-width: 40rem;
     height: auto;
-    display: block; /* Remove espaços extras */
-    margin: 0 auto; /* Garante centralização */
+    display: block; 
+    margin: 0 auto; 
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1400px) {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -28,7 +28,15 @@ export const HeaderHomeContainer = styled.div`
     img {
       width: 90%;
       max-width: 400px;
+      min-width: 250px;
       margin-bottom: 2rem;
+      margin: 0 ;
+    }
+
+    span{
+      text-align: left;
+      flex-wrap: wrap;
+      word-break: break;
     }
   }
 `;
@@ -49,7 +57,8 @@ export const HeaderHomeTitles = styled.div`
     font-size: 1.25rem;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1280px) {
+    flex-direction: column;
     text-align: center;
     align-items: center;
   }
@@ -72,12 +81,10 @@ export const HeaderHomeItems = styled.div`
     flex-wrap: wrap;
   }
 
-  @media (max-width: 943px) {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  @media (max-width: 1280px) {
     align-items: flex-start;
   }
+
 `;
 
 export const ItemCart = styled.span`
@@ -88,6 +95,7 @@ export const ItemCart = styled.span`
   height: 32px;
   border-radius: 50%;
   gap: 1rem;
+  white-space: break-spaces;
 
   background: ${(props) => props.theme["yellow-500"]};
   color: ${(props) => props.theme["gray-100"]};

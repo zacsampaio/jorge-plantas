@@ -24,7 +24,7 @@ export const CardCatalagComponents = styled.div`
     width: 10rem;
     height: 10rem;
     border-radius: 50%;
-    
+    object-fit: cover;
   }
 
   h3 {
@@ -39,6 +39,7 @@ export const CardCatalagComponents = styled.div`
 
     img {
       max-width: 100px;
+      max-height: 100px; 
     }
   }
 
@@ -47,6 +48,7 @@ export const CardCatalagComponents = styled.div`
 
     img {
       max-width: 80px;
+      max-height: 80px;
     }
   }
 
@@ -54,6 +56,7 @@ export const CardCatalagComponents = styled.div`
     width: 100%;
     img {
       max-width: 60px;
+      max-height: 60px;
     }
   }
 `;

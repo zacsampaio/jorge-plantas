@@ -31,7 +31,7 @@ export const GlobalStyled = createGlobalStyle`
   
   @media (max-width: 768px) {
     html {
-      font-size: 70%;
+      font-size: 100%;
       max-width: 100dvw;
       max-height: 100dvh;
     }
@@ -41,7 +41,7 @@ export const GlobalStyled = createGlobalStyle`
 
   @media (max-width: 555px) {
     html {
-      font-size: 60%;
+      font-size: 100%;
       max-width: 100dvw;
       max-height: 100dvh;
     }
@@ -50,7 +50,7 @@ export const GlobalStyled = createGlobalStyle`
 
   @media (max-width: 471px) {
     html {
-      font-size: 60%;
+      font-size: 80%;
       max-width: 100dvw;
       max-height: 100dvh;
     }
@@ -58,7 +58,7 @@ export const GlobalStyled = createGlobalStyle`
 
   @media (max-width: 375px) {
     html {
-      font-size: 50%;
+      font-size: 80%;
       max-width: 100dvw;
       max-height: 100dvh;
     }
