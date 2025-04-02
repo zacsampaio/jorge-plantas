@@ -82,8 +82,16 @@ export const TagValue = styled.div`
     font-size: 0.875rem;
     line-height: 130%;
     color: ${(props) => props.theme["gray-700"]};
+    
   }
-`;
+
+  @media (max-width: 780px){
+    
+    p{
+      font-size: 0.7rem;
+      margin-left: 0.3rem;
+    }
+}`
 
 export const TagValueSpan = styled.span`
   font-size: 1.5rem;
@@ -92,6 +100,10 @@ export const TagValueSpan = styled.span`
   color: ${(props) => props.theme["gray-700"]};
   font-family: "Baloo 2", sans-serif;
   margin-right: 1rem;
+
+  @media (max-width: 780px){
+      font-size: 1rem;
+  }
 `;
 
 export const TagsComponents = styled.div`

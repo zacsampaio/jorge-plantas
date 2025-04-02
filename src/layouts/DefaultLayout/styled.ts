@@ -7,4 +7,12 @@ export const LayoutContainer = styled.div`
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+
+  @media (max-width: 1090px){
+    max-width: calc(100vw - 10rem);
+  }
+
+  @media (max-width: 664){
+    max-width: calc(100vw - 2rem);
+  } 
 `
