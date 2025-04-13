@@ -36,8 +36,14 @@ export function CartTotalPayments({
       </CheckoutTotalItems>
       {valueProducts > 0 && (
         <CheckoutDelivery>
-          <p>Entrega</p>
-          <p>R$ {valueDelivery.toFixed(2)}</p>
+          {valueDelivery === 0 ? (
+            <p>Consultar taxa de entrega através do WhatsApp</p>
+          ) : (
+            <>
+              <p>Entrega</p>
+              <p>R$ {valueDelivery.toFixed(2)}</p>
+            </>
+          )}
         </CheckoutDelivery>
       )}
       <CheckoutTotal>

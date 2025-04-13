@@ -62,7 +62,7 @@ export function Form({ onFormValidation }: FormProps) {
         <h4>Endereço de Entrega</h4>
       </CheckoutFormTitles>
       <p>Informe o endereço onde deseja receber seu pedido</p>
-      <p>Obs.: Valor fixo de R$ 15,00 para Fortaleza, para outras regiões consultar disponibilidade através do WhatsApp.</p>
+      <p>Obs.: Entregas apenas para Grande Fortaleza/CE.</p>
       <CheckoutFormInputs>
         <input
           placeholder="CEP"

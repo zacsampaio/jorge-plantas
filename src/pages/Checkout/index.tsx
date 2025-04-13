@@ -26,8 +26,33 @@ export function Checkout() {
     [products]
   );
 
-  const valueDelivery = valueProducts > 0 ? 15 : 0;
-  const totalValue = valueProducts + valueDelivery;
+  const deliveryValueForCity = () => {
+    switch (address.city) {
+      case "Fortaleza":
+        return 30
+      
+      case "Eusebio":
+        return 20
+      
+      case "Maracanau":
+        return 30
+      
+      case "Maranguape":
+        return 40
+      
+      case "Caucaia":
+        return 50
+      
+      case "Aquiraz":
+        return 20
+
+      default:
+        return null
+    }
+  }; 
+
+  const valueDelivery = valueProducts > 0 ? Number(deliveryValueForCity()) : 0;
+  const totalValue = valueDelivery > 0 ? valueProducts + valueDelivery : valueProducts;
 
   const handleFormValidation = (valid: boolean) => {
     setIsFormValid(valid);
