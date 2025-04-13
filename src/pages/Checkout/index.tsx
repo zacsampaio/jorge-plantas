@@ -15,7 +15,9 @@ import { clearCart } from "../../redux/cart/slice";
 
 export function Checkout() {
   const [isFormValid, setIsFormValid] = useState(false);
-  const paymentMethod = useSelector((state: RootState) => state.paymentMethod?.paymentMethod || "");
+  const paymentMethod = useSelector(
+    (state: RootState) => state.paymentMethod?.paymentMethod || ""
+  );
   const address = useSelector((state: RootState) => state.address);
   const { products } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
@@ -26,33 +28,44 @@ export function Checkout() {
     [products]
   );
 
+  const normalize = (text: string) => {
+    return text
+      .normalize("NFD") 
+      .replace(/[\u0300-\u036f]/g, "") 
+      .toLowerCase() 
+      .replace(/\s+/g, ""); 
+  };
+
   const deliveryValueForCity = () => {
-    switch (address.city) {
-      case "Fortaleza":
-        return 30
-      
-      case "Eusebio":
-        return 20
-      
-      case "Maracanau":
-        return 30
-      
-      case "Maranguape":
-        return 40
-      
-      case "Caucaia":
-        return 50
-      
-      case "Aquiraz":
-        return 20
+    const normalizedCity = normalize(address.city)
+
+    switch (normalizedCity) {
+      case "fortaleza":
+        return 30;
+
+      case "eusebio":
+        return 20;
+
+      case "maracanau":
+        return 30;
+
+      case "maranguape":
+        return 40;
+
+      case "caucaia":
+        return 50;
+
+      case "aquiraz":
+        return 20;
 
       default:
-        return null
+        return null;
     }
-  }; 
+  };
 
   const valueDelivery = valueProducts > 0 ? Number(deliveryValueForCity()) : 0;
-  const totalValue = valueDelivery > 0 ? valueProducts + valueDelivery : valueProducts;
+  const totalValue =
+    valueDelivery > 0 ? valueProducts + valueDelivery : valueProducts;
 
   const handleFormValidation = (valid: boolean) => {
     setIsFormValid(valid);
