@@ -34,7 +34,7 @@ export const HeaderHomeContainer = styled.div`
     }
 
     span{
-      text-align: left;
+      text-align: center;
       flex-wrap: wrap;
       word-break: break;
     }

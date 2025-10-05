@@ -6,11 +6,6 @@ export const GlobalStyled = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
-
-  :focus {
-    outline: 0;
-    box-shadow:  0 0 0 3px ${(props) => props.theme["green-300"]};
-  }
   
   body{
     background: ${(props) => props.theme["white"]};

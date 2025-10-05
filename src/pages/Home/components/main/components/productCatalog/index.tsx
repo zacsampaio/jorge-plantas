@@ -16,6 +16,7 @@ interface CardCatalogProps {
 
 export function CardCatalag({ product }: CardCatalogProps) {
   const getImage = (name: string) => {
+    
     const imageUrl = `/assets/plants/${name}.jpg`;
     return imageUrl || "/assets/plants/default.jpg";
   };

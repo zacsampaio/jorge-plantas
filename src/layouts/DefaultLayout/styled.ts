@@ -7,6 +7,9 @@ export const LayoutContainer = styled.div`
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   @media (max-width: 1090px){
     max-width: calc(100vw - 10rem);
@@ -15,4 +18,10 @@ export const LayoutContainer = styled.div`
   @media (max-width: 664){
     max-width: calc(100vw - 2rem);
   } 
+`
+
+export const MainContent = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 `
