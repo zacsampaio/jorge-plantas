@@ -109,3 +109,50 @@ export const CheckoutFormInputs = styled.div`
     grid-template-columns: 12.5rem 1fr 4rem;
   }
 `;
+
+export const CepInputContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+
+  input {
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+`;
+
+export const SearchButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: ${(props) => props.theme["yellow-500"]};
+  color: ${(props) => props.theme["white"]};
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  height: fit-content;
+
+  &:hover:not(:disabled) {
+    background: ${(props) => props.theme["yellow-300"]};
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+`;
