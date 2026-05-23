@@ -1,9 +1,16 @@
-import { Package, ShoppingCart, Timer, Cactus } from "phosphor-react";
+import { Package, ShoppingCart, Timer, Cactus, ArrowRight } from "phosphor-react";
 import plantsHeader from "../../../../../public/assets/plants-header.png";
 import {
   HeaderHomeContainer,
   HeaderHomeItems,
   HeaderHomeTitles,
+  HeroActions,
+  HeroBadge,
+  HeroHighlight,
+  HeroPrimaryButton,
+  HeroSecondaryButton,
+  HeroSection,
+  HeroTagline,
   ItemCart,
   ItemCoffee,
   ItemPackage,
@@ -12,16 +19,30 @@ import {
 
 export function HeaderHome() {
   return (
-    <HeaderHomeContainer>
-      <HeaderHomeTitles>
-        <h1>Encontre as plantas perfeitas</h1>
-        <h1>para renovar o seu ambiente!</h1>
-        <p>
-          No Jorge Plantas, cada planta é cultivada com carinho e dedicação para
-          chegar até você saudável e vibrante. Explore nosso catálogo e traga
-          mais vida para sua casa, evento ou jardim!
-        </p>
-        <HeaderHomeItems>
+    <HeroSection>
+      <HeaderHomeContainer>
+        <HeaderHomeTitles>
+          <HeroBadge>Floricultura em Fortaleza · CE</HeroBadge>
+          <HeroTagline>Plante histórias. Colha bem-estar.</HeroTagline>
+          <h1>
+            Encontre as plantas perfeitas para{" "}
+            <HeroHighlight>renovar o seu ambiente!</HeroHighlight>
+          </h1>
+          <p>
+            No Jorge Plantas, cada planta é cultivada com carinho e dedicação para
+            chegar até você saudável e vibrante. Mais de 20 anos levando natureza
+            para casas, eventos e jardins na região metropolitana.
+          </p>
+          <HeroActions>
+            <HeroPrimaryButton to="/produtos">
+              Ver catálogo
+              <ArrowRight size={18} weight="bold" />
+            </HeroPrimaryButton>
+            <HeroSecondaryButton to="/sobre-nos">
+              Nossa história
+            </HeroSecondaryButton>
+          </HeroActions>
+          <HeaderHomeItems>
           <span>
             <ItemCart>
               <ShoppingCart size={16} weight="fill" />
@@ -48,8 +69,9 @@ export function HeaderHome() {
             Plantas sempre frescas e bem cuidadas para você
           </span>
         </HeaderHomeItems>
-      </HeaderHomeTitles>
-      <img src={plantsHeader} />
-    </HeaderHomeContainer>
+        </HeaderHomeTitles>
+        <img src={plantsHeader} alt="Plantas decorativas Jorge Plantas" />
+      </HeaderHomeContainer>
+    </HeroSection>
   );
 }

@@ -1,10 +1,10 @@
 import { ProductsType } from "../redux/cart/types";
 
-
 export const products: ProductsType[] = [
   {
     id: 1,
     tags: ["sombra parcial", "interior"],
+    bestSeller: true,
     name: "Samambaia com Cesta",
     description: "Beleza tropical e fácil de cuidar para seu ambiente!",
     price: 50.0,
@@ -13,6 +13,7 @@ export const products: ProductsType[] = [
   {
     id: 2,
     tags: ["sol pleno", "interior"],
+    bestSeller: true,
     name: "Flecha-de-Macaco",
     description: "Traz frescor e é perfeita para purificar o ar!",
     price: 20.0,
@@ -45,6 +46,7 @@ export const products: ProductsType[] = [
   {
     id: 6,
     tags: ["sombra parcial", "interior"],
+    bestSeller: true,
     name: "Café de Salão",
     description: "Traz elegância e renova a atmosfera da sua casa!",
     price: 15.0,
@@ -109,6 +111,7 @@ export const products: ProductsType[] = [
   {
     id: 14,
     tags: ["sombra parcial", "interior"],
+    bestSeller: true,
     name: "Jiboia com Cesta",
     description: "Traz um toque tropical e é ideal para pendurar e embelezar espaços!",
     price: 30.0,
@@ -123,3 +126,38 @@ export const products: ProductsType[] = [
     quantity: 0,
   },
 ];
+
+export function getBestSellerProducts(): ProductsType[] {
+  return products.filter((product) => product.bestSeller);
+}
+
+export function getProductsByIds(ids: number[]): ProductsType[] {
+  return ids
+    .map((id) => products.find((product) => product.id === id))
+    .filter((product): product is ProductsType => product !== undefined);
+}
+
+export function getProductsByTag(tag: string, limit = 4): ProductsType[] {
+  return filterProductsByTag(tag).slice(0, limit);
+}
+
+export function getProductsByTagExcluding(
+  tag: string,
+  excludeIds: number[],
+  limit = 4
+): ProductsType[] {
+  const excluded = new Set(excludeIds);
+  return filterProductsByTag(tag)
+    .filter((product) => !excluded.has(product.id))
+    .slice(0, limit);
+}
+
+export function getAllProductTags(): string[] {
+  const tags = products.flatMap((product) => product.tags ?? []);
+  return [...new Set(tags)].sort((a, b) => a.localeCompare(b, "pt-BR"));
+}
+
+export function filterProductsByTag(tag: string | null): ProductsType[] {
+  if (!tag) return products;
+  return products.filter((product) => product.tags?.includes(tag));
+}

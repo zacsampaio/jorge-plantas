@@ -27,6 +27,9 @@ export function Footer() {
           <FooterLink as={Link} to="/">
             Início
           </FooterLink>
+          <FooterLink as={Link} to="/produtos">
+            Produtos
+          </FooterLink>
           <FooterLink as={Link} to="/sobre-nos">
             Sobre Nós
           </FooterLink>

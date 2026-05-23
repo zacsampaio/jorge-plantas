@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const CardCatalagComponents = styled.div`
-  margin-top: 4rem;
+  margin-top: 1.5rem;
   display: flex;
   justify-content: space-around;
   align-items: center;

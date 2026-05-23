@@ -5,6 +5,7 @@ export interface ProductsType {
   description?: string;
   price: number;
   quantity: number;
+  bestSeller?: boolean;
 }
 
 export interface CartState {

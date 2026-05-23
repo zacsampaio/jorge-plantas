@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 
 export const NavContainer = styled.nav`
   display: flex;
@@ -6,6 +7,7 @@ export const NavContainer = styled.nav`
   align-items: center;
   padding: 2rem 0;
   flex-wrap: wrap;
+  gap: 1rem;
 
   @media (max-width: 768px) {
     padding: 1.5rem 0;
@@ -15,6 +17,30 @@ export const NavContainer = styled.nav`
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+  }
+`;
+
+export const NavLinks = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  @media (max-width: 480px) {
+    order: 3;
+  }
+`;
+
+export const NavMenuLink = styled(NavLink)`
+  font-family: "Roboto", sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: ${(props) => props.theme["gray-700"]};
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover,
+  &.active {
+    color: ${(props) => props.theme["green-500"]};
   }
 `;
 

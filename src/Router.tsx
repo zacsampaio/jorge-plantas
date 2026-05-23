@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
+import { Produtos } from "./pages/Produtos";
 import { Checkout } from "./pages/Checkout";
 import { Confirmed } from "./pages/Confirmed/index";
 import { SobreNos } from "./pages/SobreNos";
@@ -10,6 +11,7 @@ export function Router() {
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Home />} />
+        <Route path="/produtos" element={<Produtos />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/confirmed" element={<Confirmed />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
