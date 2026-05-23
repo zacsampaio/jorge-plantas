@@ -1,6 +1,7 @@
 export const defaultTheme = {
   white: '#FFFFFF',
 
+  'gray-50': '#FDFDFD',
   'gray-100': '#FAFAFA',
   'gray-200': '#F3F2F2',
   'gray-300': '#EDEDED',
@@ -18,6 +19,7 @@ export const defaultTheme = {
   'green-100': '#6CBD8D',
   'green-300': '#92e3a9',
   'green-500': '#2EAF59',
+  'green-600': '#228B44',
 
   'gradient-purple-yellow': 'linear-gradient(125deg, #DBAC2C, #8047F8)',
 }

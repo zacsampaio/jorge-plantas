@@ -1,10 +1,8 @@
-import 'styled-components'
-import { defaultTheme } from '../styles/themes/default'
+import "styled-components";
+import { defaultTheme } from "../styles/themes/default";
 
 type ThemeType = typeof defaultTheme;
 
-declare module 'styled-components' {
-   export interface DefaultTheme extends ThemeType {
-     _dummyField?: string;
-   }
- }
+declare module "styled-components" {
+  export interface DefaultTheme extends ThemeType, Record<string, string> {}
+}

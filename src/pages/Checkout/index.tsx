@@ -12,9 +12,12 @@ import { RootState } from "../../redux/rootReducer";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../../redux/cart/slice";
+import { useAuth } from "../../hooks/useAuth";
+import { createOrder } from "../../services/orders/orderService";
 
 export function Checkout() {
   const [isFormValid, setIsFormValid] = useState(false);
+  const { user } = useAuth();
   const paymentMethod = useSelector(
     (state: RootState) => state.paymentMethod?.paymentMethod || ""
   );
@@ -95,21 +98,43 @@ export function Checkout() {
     return true;
   };
 
-  const handleCreateOrder = () => {
-    const order = {
-      products,
-      address,
+  const handleCreateOrder = async (): Promise<boolean> => {
+    if (!user) {
+      alert("Faça login para finalizar o pedido.");
+      navigate("/auth?redirect=/checkout");
+      return false;
+    }
+
+    const { order, error } = await createOrder({
+      userId: user.id,
+      items: products.map((item) => ({
+        productId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unitPrice: item.price,
+      })),
       total: totalValue,
-      delivery: valueDelivery,
-      paymentMethod,
-    };
+      deliveryFee: valueDelivery,
+      paymentMethod: String(paymentMethod),
+      address: {
+        zipCode: address.zipCode,
+        street: address.street,
+        number: address.number,
+        complement: address.complement ?? "",
+        neighborhood: address.neighborhood,
+        city: address.city,
+        state: address.state,
+      },
+    });
 
-    const previousOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    if (error || !order) {
+      alert(error ?? "Não foi possível registrar o pedido. Tente novamente.");
+      return false;
+    }
 
-    previousOrders.push(order);
-    localStorage.setItem("orders", JSON.stringify(previousOrders));
     dispatch(clearCart());
     navigate("/confirmed");
+    return true;
   };
 
   const sendOrderToWhatsApp = () => {
@@ -147,11 +172,13 @@ export function Checkout() {
     window.open(url, "_blank");
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (!validateOrder()) return;
 
-    handleCreateOrder();
-    sendOrderToWhatsApp();
+    const created = await handleCreateOrder();
+    if (created) {
+      sendOrderToWhatsApp();
+    }
   };
 
   return (

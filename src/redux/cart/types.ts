@@ -1,3 +1,5 @@
+export type ProductStatus = "active" | "inactive";
+
 export interface ProductsType {
   id: number;
   tags?: string[];
@@ -6,6 +8,11 @@ export interface ProductsType {
   price: number;
   quantity: number;
   bestSeller?: boolean;
+  status?: ProductStatus;
+  /** Caminho no bucket Supabase `products` */
+  imagePath?: string | null;
+  /** URL pública resolvida (Supabase Storage ou fallback local) */
+  imageUrl?: string;
 }
 
 export interface CartState {

@@ -88,6 +88,12 @@ export const ProdutosGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
+  transition: opacity 0.15s ease;
+
+  &[data-refreshing="true"] {
+    opacity: 0.55;
+    pointer-events: none;
+  }
 
   @media (max-width: 1440px) {
     justify-content: center;

@@ -2,22 +2,20 @@ import { CountButton } from "../countButton";
 import { CardCartComponents, CardCartComponentsButtons } from "./styled";
 import { RemoveButton } from "../removeButton";
 import { ProductsType } from "../../redux/cart/types";
+import { ProductImage } from "../ProductImage";
 
 interface CardCartProps {
   product: ProductsType;
 }
 
 export function CardCart({ product} : CardCartProps) {
-
-  const getImage = (name:string) => {
-    const imageUrl = `/assets/plants/${name}.jpg`;
-
-    return imageUrl || "/assets/plants/default.jpg";
-  };
-
   return (
     <CardCartComponents>
-      <img src={getImage(product.name)} />
+      <ProductImage
+        name={product.name}
+        imagePath={product.imagePath}
+        alt={product.name}
+      />
       <div>
         <h3>{product.name}</h3>
         <CardCartComponentsButtons>
