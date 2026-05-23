@@ -22,9 +22,21 @@ export const AuthButton = styled.button`
     background: ${(props) => props.theme["green-100"]};
   }
 
-  @media (max-width: 480px) {
+  .auth-label-short {
+    display: none;
+  }
+
+  @media (max-width: 520px) {
     font-size: 0.75rem;
-    padding: 0 0.8rem;
-    height: 2rem;
+    padding: 0 0.75rem;
+    height: 2.25rem;
+
+    .auth-label-full {
+      display: none;
+    }
+
+    .auth-label-short {
+      display: inline;
+    }
   }
 `;

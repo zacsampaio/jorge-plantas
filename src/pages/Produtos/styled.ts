@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ProdutosContainer = styled.div`
   margin-bottom: 4rem;
-  padding: 0 1rem;
+  width: 100%;
 `;
 
 export const ProdutosTitle = styled.h1`
@@ -82,6 +82,29 @@ export const ResultsCount = styled.p`
   font-size: 0.875rem;
   color: ${(props) => props.theme["gray-600"]};
   margin-bottom: 1rem;
+`;
+
+export const ProdutosError = styled.div`
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid ${(props) => props.theme["yellow-500"]};
+  background: ${(props) => props.theme["yellow-100"]};
+  color: ${(props) => props.theme["gray-800"]};
+  font-family: "Roboto", sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+
+  button {
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    border: 0;
+    border-radius: 8px;
+    background: ${(props) => props.theme["green-500"]};
+    color: ${(props) => props.theme.white};
+    font-weight: 600;
+    cursor: pointer;
+  }
 `;
 
 export const ProdutosGrid = styled.div`

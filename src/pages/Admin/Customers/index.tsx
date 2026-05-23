@@ -33,6 +33,7 @@ export function AdminCustomersPage() {
   } = usePaginatedFetch({
     fetcher: fetchPage,
     pageSize: DEFAULT_PAGE_SIZE,
+    waitForAuth: true,
   });
 
   return (

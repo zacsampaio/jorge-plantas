@@ -57,6 +57,7 @@ export function AccountOrdersPage() {
     pageSize: DEFAULT_PAGE_SIZE,
     enabled: !!user,
     resetKey: user?.id,
+    waitForAuth: true,
   });
 
   return (

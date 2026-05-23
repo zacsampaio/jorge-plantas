@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "../../lib/supabase/client";
+import { publicRestGet } from "../../lib/supabase/publicRest";
 import type {
   CatalogProduct,
   CatalogProductInput,
@@ -8,7 +9,6 @@ import type { PaginatedResult, PaginationParams } from "../../types/pagination";
 import type { ProductStatus } from "../../redux/cart/types";
 import {
   buildPaginatedResult,
-  emptyPaginatedResult,
   normalizePagination,
 } from "../../utils/pagination";
 
@@ -40,56 +40,62 @@ function mapInputToRow(input: CatalogProductInput) {
   };
 }
 
+function buildProductsQuery(
+  params: { tag?: string | null; status?: ProductStatus } = {}
+): string {
+  const search = new URLSearchParams();
+  search.set("select", "*");
+  search.set("order", "id.asc");
+
+  if (params.status) {
+    search.set("status", `eq.${params.status}`);
+  }
+
+  if (params.tag) {
+    search.set("tags", `cs.{${params.tag}}`);
+  }
+
+  return `products?${search.toString()}`;
+}
+
 export async function fetchProductsPaginatedFromDb(
   params: PaginationParams & { tag?: string | null; status?: ProductStatus } = {}
 ): Promise<PaginatedResult<CatalogProduct>> {
   const { page, pageSize, from, to } = normalizePagination(params);
-  const supabase = getSupabaseClient();
-  if (!supabase) return emptyPaginatedResult(page, pageSize);
+  const query = buildProductsQuery(params);
 
-  let query = supabase
-    .from("products")
-    .select("*", { count: "exact" })
-    .order("id", { ascending: true });
+  const { data, total, error } = await publicRestGet<ProductRow[]>(query, {
+    prefer: "count=exact",
+    range: { from, to },
+  });
 
-  if (params.status) {
-    query = query.eq("status", params.status);
+  if (error) {
+    console.error("Erro ao buscar produtos paginados:", error);
+    throw new Error(error);
   }
 
-  if (params.tag) {
-    query = query.contains("tags", [params.tag]);
-  }
-
-  const { data, error, count } = await query.range(from, to);
-
-  if (error || !data) {
-    console.error("Erro ao buscar produtos paginados:", error?.message);
-    return emptyPaginatedResult(page, pageSize);
-  }
+  const rows = Array.isArray(data) ? data : [];
+  const count = total ?? rows.length;
 
   return buildPaginatedResult(
-    (data as ProductRow[]).map(mapRowToProduct),
-    count ?? 0,
+    rows.map(mapRowToProduct),
+    count,
     page,
     pageSize
   );
 }
 
 export async function fetchProductsFromDb(): Promise<CatalogProduct[]> {
-  const supabase = getSupabaseClient();
-  if (!supabase) return [];
+  const query = buildProductsQuery();
+  const { data, error } = await publicRestGet<ProductRow[]>(query);
 
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("id", { ascending: true });
-
-  if (error || !data) {
-    console.error("Erro ao buscar produtos:", error?.message);
-    return [];
+  if (error) {
+    console.error("Erro ao buscar produtos:", error);
+    throw new Error(error);
   }
 
-  return (data as ProductRow[]).map(mapRowToProduct);
+  const rows = Array.isArray(data) ? data : [];
+  return rows.map(mapRowToProduct);
 }
 
 export async function createProductInDb(

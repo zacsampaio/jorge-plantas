@@ -23,41 +23,12 @@ export const GlobalStyled = createGlobalStyle`
     border: 0;
   }
 
-  
-  @media (max-width: 768px) {
-    html {
-      font-size: 100%;
-      max-width: 100dvw;
-      max-height: 100dvh;
-    }
-
-    
+  html {
+    font-size: 100%;
+    overflow-x: hidden;
   }
 
-  @media (max-width: 555px) {
-    html {
-      font-size: 80%;
-      max-width: 100dvw;
-      max-height: 100dvh;
-    }
-    
+  body {
+    overflow-x: hidden;
   }
-
-  @media (max-width: 471px) {
-    html {
-      font-size: 80%;
-      max-width: 100dvw;
-      max-height: 100dvh;
-    }
-  }
-
-  @media (max-width: 375px) {
-    html {
-      font-size: 80%;
-      max-width: 100dvw;
-      max-height: 100dvh;
-    }
-    
-  }
-
 `;

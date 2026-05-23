@@ -17,10 +17,10 @@ const LoadingContainer = styled.div`
 
 export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
   const { isAuthenticated, role } = useAuth();
-  const bootstrapped = useAuthStore((state) => state.bootstrapped);
+  const authStatus = useAuthStore((state) => state.status);
   const location = useLocation();
 
-  if (!bootstrapped) {
+  if (authStatus === "loading") {
     return <LoadingContainer>Carregando...</LoadingContainer>;
   }
 

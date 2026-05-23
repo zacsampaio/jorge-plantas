@@ -1,5 +1,4 @@
 import { Package, ShoppingCart, Timer, Cactus, ArrowRight } from "phosphor-react";
-import plantsHeader from "../../../../../public/assets/plants-header.png";
 import {
   HeaderHomeContainer,
   HeaderHomeItems,
@@ -70,7 +69,7 @@ export function HeaderHome() {
           </span>
         </HeaderHomeItems>
         </HeaderHomeTitles>
-        <img src={plantsHeader} alt="Plantas decorativas Jorge Plantas" />
+        <img src="/assets/plants-header.png" alt="Plantas decorativas Jorge Plantas" />
       </HeaderHomeContainer>
     </HeroSection>
   );

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { authService } from "../services/auth/authService";
 import { updateUserProfile } from "../services/profile/profileService";
+import { purgeStaleSupabaseAuthLocal } from "../lib/auth/sessionManager";
 import type {
   AuthStatus,
   RegisterInput,
@@ -22,6 +23,29 @@ interface AuthState {
   clearMessages: () => void;
 }
 
+const AUTH_SESSION_TIMEOUT_MS = 2500;
+let initializePromise: Promise<void> | null = null;
+
+async function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error("auth timeout"));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   session: null,
   status: "idle",
@@ -30,25 +54,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   info: null,
 
   initialize: async () => {
-    set({ status: "loading", error: null, info: null });
-    try {
-      const session = await authService.getSession();
-      set({
-        session,
-        status: session ? "authenticated" : "unauthenticated",
-      });
+    if (initializePromise) return initializePromise;
 
-      authService.onAuthStateChange((newSession) => {
-        set({
-          session: newSession,
-          status: newSession ? "authenticated" : "unauthenticated",
-        });
-      });
-    } catch {
-      set({ session: null, status: "unauthenticated" });
-    } finally {
-      set({ bootstrapped: true });
-    }
+    initializePromise = (async () => {
+      set({ bootstrapped: true, status: "unauthenticated", error: null, info: null });
+
+      try {
+        await purgeStaleSupabaseAuthLocal();
+        const session = await withTimeout(
+          authService.getSession(),
+          AUTH_SESSION_TIMEOUT_MS
+        );
+        if (session) {
+          set({ session, status: "authenticated" });
+        }
+      } catch (error) {
+        console.warn("[auth] Bootstrap rápido — seguindo sem sessão:", error);
+      }
+    })();
+
+    return initializePromise;
   },
 
   signIn: async (email, password) => {
@@ -101,7 +126,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     await authService.signOut();
-    set({ session: null, status: "unauthenticated", error: null });
   },
 
   updateProfile: async (data) => {

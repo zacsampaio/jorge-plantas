@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 export const AdminShell = styled.div`
   display: grid;
   grid-template-columns: 260px 1fr;
+  align-items: start;
   min-height: 100vh;
   background: ${(props) => props.theme["gray-50"] ?? props.theme["gray-100"]};
 
@@ -13,16 +14,28 @@ export const AdminShell = styled.div`
 `;
 
 export const AdminSidebar = styled.aside`
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 260px;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
   padding: 1.5rem 1rem;
+  box-sizing: border-box;
   background: ${(props) => props.theme["gray-800"]};
   color: ${(props) => props.theme.white};
-  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   @media (max-width: 900px) {
-    min-height: auto;
+    position: relative;
+    width: 100%;
+    height: auto;
+    max-height: none;
   }
 `;
 
@@ -46,6 +59,7 @@ export const SidebarNav = styled.nav`
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
+  min-height: 0;
 `;
 
 export const AdminNavLink = styled(NavLink)`
@@ -77,8 +91,10 @@ export const AdminNavLink = styled(NavLink)`
 `;
 
 export const SidebarFooter = styled.div`
+  margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 `;
 
 export const AdminMain = styled.main`
@@ -206,4 +222,4 @@ export const StatusSelect = styled.select`
   font-size: 0.8125rem;
   background: white;
 `;
-
+

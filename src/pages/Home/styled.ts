@@ -5,7 +5,7 @@ export const HomePage = styled.div`
 `;
 
 export const Section = styled.section<{ $variant?: "default" | "muted" | "green" }>`
-  padding: 4rem 1rem;
+  padding: 4rem 0;
   background: ${(props) => {
     if (props.$variant === "muted") return props.theme["gray-100"];
     if (props.$variant === "green")

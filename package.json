@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "upload:images": "node scripts/upload-product-images.mjs",
+    "check:env": "node scripts/check-env.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",

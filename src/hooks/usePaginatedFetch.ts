@@ -10,6 +10,7 @@ interface UsePaginatedFetchOptions<T> {
   pageSize?: number;
   enabled?: boolean;
   resetKey?: string | number | boolean | null;
+  waitForAuth?: boolean;
 }
 
 const emptyResult = <T,>(pageSize: number): PaginatedResult<T> => ({
@@ -25,8 +26,9 @@ export function usePaginatedFetch<T>({
   pageSize = DEFAULT_PAGE_SIZE,
   enabled = true,
   resetKey,
+  waitForAuth = false,
 }: UsePaginatedFetchOptions<T>) {
-  const bootstrapped = useAuthStore((state) => state.bootstrapped);
+  const authStatus = useAuthStore((state) => state.status);
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<PaginatedResult<T>>(() =>
     emptyResult(pageSize)
@@ -40,7 +42,9 @@ export function usePaginatedFetch<T>({
   const hasDataRef = useRef(false);
   fetcherRef.current = fetcher;
 
-  const canFetch = enabled && bootstrapped;
+  const authReady = authStatus !== "loading" && authStatus !== "idle";
+  const canFetch = enabled && (!waitForAuth || authReady);
+  const waitingForAuth = waitForAuth && !authReady;
 
   useEffect(() => {
     setPage(1);
@@ -70,10 +74,14 @@ export function usePaginatedFetch<T>({
         setResult(data);
         setError(null);
         hasDataRef.current = data.data.length > 0;
-      } catch {
+      } catch (err) {
         if (cancelled) return;
 
-        setError("Não foi possível carregar os dados.");
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Não foi possível carregar os dados.";
+        setError(message);
         if (!hasDataRef.current) {
           setResult(emptyResult(pageSize));
         }
@@ -91,7 +99,7 @@ export function usePaginatedFetch<T>({
       cancelled = true;
       clearTimeout(skeletonTimer);
     };
-  }, [canFetch, page, pageSize, reloadToken]);
+  }, [canFetch, page, pageSize, reloadToken, resetKey]);
 
   const setPageSafe = useCallback((nextPage: number) => {
     setPage(Math.max(1, nextPage));
@@ -108,8 +116,8 @@ export function usePaginatedFetch<T>({
     pageSize: result.pageSize,
     page,
     setPage: setPageSafe,
-    isLoading: isInitialLoading,
-    isInitialLoading,
+    isLoading: isInitialLoading || waitingForAuth,
+    isInitialLoading: isInitialLoading || waitingForAuth,
     isRefreshing,
     error,
     reload,

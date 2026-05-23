@@ -26,8 +26,17 @@ export function getProductImageSrc(product: {
   return getLocalProductImageSrc(product.name);
 }
 
+export function sanitizeStorageFileName(fileName: string): string {
+  return fileName
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s.\-()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function buildProductImagePath(productId: number, fileName: string): string {
-  const safeName = fileName.replace(/[^\w\s.\-()áàâãéèêíìîóòôõúùûçÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ]/g, "");
+  const safeName = sanitizeStorageFileName(fileName);
   return `${productId}/${safeName}`;
 }
 

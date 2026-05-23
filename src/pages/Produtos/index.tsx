@@ -5,6 +5,7 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { Pagination } from "../../components/ui/Pagination";
 import { usePaginatedFetch } from "../../hooks/usePaginatedFetch";
 import { fetchCatalogProductsPaginated } from "../../services/products/productService";
+import { getSupabaseConfigDevHint } from "../../lib/supabase/config";
 import { DEFAULT_PAGE_SIZE } from "../../types/pagination";
 import {
   FilterButton,
@@ -13,12 +14,14 @@ import {
   ProdutosLayout,
   ProdutosSubtitle,
   ProdutosTitle,
+  ProdutosError,
   ResultsCount,
   Sidebar,
   SidebarTitle,
 } from "./styled";
 
 export function Produtos() {
+  const configHint = getSupabaseConfigDevHint();
   const [searchParams] = useSearchParams();
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -43,6 +46,8 @@ export function Produtos() {
     setPage,
     isInitialLoading,
     isRefreshing,
+    error,
+    reload,
   } = usePaginatedFetch({
     fetcher: fetchPage,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -57,13 +62,17 @@ export function Produtos() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetchCatalogProductsPaginated({ page: 1, pageSize: 100, status: "active" }).then(
-      (result) => {
+    if (configHint) return;
+
+    fetchCatalogProductsPaginated({ page: 1, pageSize: 100, status: "active" })
+      .then((result) => {
         const allTags = result.data.flatMap((product) => product.tags ?? []);
         setTags([...new Set(allTags)].sort((a, b) => a.localeCompare(b, "pt-BR")));
-      }
-    );
-  }, []);
+      })
+      .catch(() => {
+        setTags([]);
+      });
+  }, [configHint]);
 
   return (
     <ProdutosContainer>
@@ -96,6 +105,16 @@ export function Produtos() {
         </Sidebar>
 
         <div>
+          {(error || configHint) && (
+            <ProdutosError>
+              {configHint ?? error}
+              {!configHint && (
+                <button type="button" onClick={reload}>
+                  Tentar novamente
+                </button>
+              )}
+            </ProdutosError>
+          )}
           <ResultsCount>
             {total}{" "}
             {total === 1 ? "produto encontrado" : "produtos encontrados"}

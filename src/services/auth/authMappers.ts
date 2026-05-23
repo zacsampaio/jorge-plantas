@@ -1,5 +1,4 @@
 import type {
-  AuthError,
   RegisterInput,
   Session,
   UserProfile,
@@ -104,41 +103,7 @@ export async function buildSessionFromAuthUser(
   };
 }
 
-export function mapSupabaseAuthError(error: {
-  message: string;
-  status?: number;
-}): AuthError {
-  const message = error.message.toLowerCase();
-
-  if (
-    message.includes("invalid login credentials") ||
-    message.includes("invalid credentials")
-  ) {
-    return {
-      code: "INVALID_CREDENTIALS",
-      message: "E-mail ou senha incorretos.",
-    };
-  }
-
-  if (message.includes("user already registered")) {
-    return {
-      code: "VALIDATION_ERROR",
-      message: "Este e-mail já está cadastrado.",
-    };
-  }
-
-  if (message.includes("email not confirmed")) {
-    return {
-      code: "VALIDATION_ERROR",
-      message: "Confirme seu e-mail antes de entrar.",
-    };
-  }
-
-  return {
-    code: "UNKNOWN",
-    message: error.message,
-  };
-}
+export { mapSupabaseAuthError, emailAlreadyRegisteredError } from "./mapAuthError";
 
 export function resolveRole(value: unknown): UserRole {
   return value === "admin" ? "admin" : "client";

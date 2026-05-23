@@ -1,8 +1,9 @@
 import { ArrowRight } from "phosphor-react";
 import { CardCatalag } from "./components/productCatalog";
 import { HeaderMainCatalog, SeeAllProductsLink } from "./styled";
-import { getProductsByIds } from "../../../../data/products";
+import { useProductsByIds } from "../../../../data/products";
 import { landingBestSellerIds } from "../../../../data/categoryShowcases";
+import { Skeleton } from "../../../../components/ui/Skeleton";
 import {
   Section,
   SectionHeader,
@@ -13,7 +14,9 @@ import {
 } from "../../styled";
 
 export function BestSellersSection() {
-  const bestSellers = getProductsByIds([...landingBestSellerIds]);
+  const { products: bestSellers, isLoading } = useProductsByIds(
+    landingBestSellerIds
+  );
 
   return (
     <Section>
@@ -26,11 +29,15 @@ export function BestSellersSection() {
             para você.
           </SectionSubtitle>
         </SectionHeader>
-        <HeaderMainCatalog>
-          {bestSellers.map((product) => (
-            <CardCatalag key={product.id} product={product} />
-          ))}
-        </HeaderMainCatalog>
+        {isLoading ? (
+          <Skeleton lines={4} height="14rem" />
+        ) : (
+          <HeaderMainCatalog>
+            {bestSellers.map((product) => (
+              <CardCatalag key={product.id} product={product} />
+            ))}
+          </HeaderMainCatalog>
+        )}
         <SeeAllProductsLink to="/produtos">
           Ver todos os produtos
           <ArrowRight size={20} weight="bold" />

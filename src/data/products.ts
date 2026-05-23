@@ -1,4 +1,5 @@
 import type { ProductsType } from "../redux/cart/types";
+import { useMemo } from "react";
 import {
   getActiveCatalogProducts,
   getCatalogProducts,
@@ -50,6 +51,31 @@ export function filterProductsByTag(tag: string | null): ProductsType[] {
 export function useCatalogProducts() {
   const products = useCatalogStore((state) => state.products);
   const isLoading = useCatalogStore((state) => state.isLoading);
+  const isInitialized = useCatalogStore((state) => state.isInitialized);
   const fetchProducts = useCatalogStore((state) => state.fetchProducts);
-  return { products: products.filter((p) => p.status !== "inactive"), isLoading, fetchProducts };
+  return {
+    products: products.filter((p) => p.status !== "inactive"),
+    isLoading,
+    isInitialized,
+    fetchProducts,
+  };
+}
+
+export function useProductsByIds(ids: readonly number[]) {
+  const products = useCatalogStore((state) => state.products);
+  const isLoading = useCatalogStore((state) => state.isLoading);
+  const isInitialized = useCatalogStore((state) => state.isInitialized);
+
+  const matched = useMemo(
+    () =>
+      ids
+        .map((id) => products.find((product) => product.id === id))
+        .filter((product): product is ProductsType => product !== undefined),
+    [ids, products]
+  );
+
+  return {
+    products: matched,
+    isLoading: isLoading || (!isInitialized && matched.length === 0),
+  };
 }

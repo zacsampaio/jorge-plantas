@@ -1,7 +1,8 @@
 import { ArrowRight, House, Sun } from "phosphor-react";
 import { CardCatalag } from "../main/components/productCatalog";
-import { getProductsByIds } from "../../../../data/products";
+import { useProductsByIds } from "../../../../data/products";
 import { CategoryShowcaseConfig } from "../../../../data/categoryShowcases";
+import { Skeleton } from "../../../../components/ui/Skeleton";
 import {
   CategoryCta,
   CategoryGrid,
@@ -24,7 +25,7 @@ const icons = {
 } as const;
 
 export function CategoryShowcaseSection({ config }: CategoryShowcaseSectionProps) {
-  const products = getProductsByIds(config.productIds);
+  const { products, isLoading } = useProductsByIds(config.productIds);
   const Icon = icons[config.accent];
 
   return (
@@ -41,11 +42,15 @@ export function CategoryShowcaseSection({ config }: CategoryShowcaseSectionProps
         <CategorySubtitle>{config.subtitle}</CategorySubtitle>
       </CategoryHeader>
 
-      <CategoryGrid>
-        {products.map((product) => (
-          <CardCatalag key={product.id} product={product} />
-        ))}
-      </CategoryGrid>
+      {isLoading ? (
+        <Skeleton lines={4} height="14rem" />
+      ) : (
+        <CategoryGrid>
+          {products.map((product) => (
+            <CardCatalag key={product.id} product={product} />
+          ))}
+        </CategoryGrid>
+      )}
 
       <CategoryCta
         to={`/produtos?categoria=${encodeURIComponent(config.tag)}`}

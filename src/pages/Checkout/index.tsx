@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { clearCart } from "../../redux/cart/slice";
 import { useAuth } from "../../hooks/useAuth";
 import { createOrder } from "../../services/orders/orderService";
+import { toast } from "../../stores/toastStore";
+import { buildAuthRedirectUrl } from "../../utils/authRedirect";
 
 export function Checkout() {
   const [isFormValid, setIsFormValid] = useState(false);
@@ -84,15 +86,15 @@ export function Checkout() {
       !address.city ||
       !address.state
     ) {
-      alert("Por favor, preencha todos os campos do endereço.");
+      toast.warning("Por favor, preencha todos os campos do endereço.");
       return false;
     }
     if (products.length === 0) {
-      alert("Por favor, adicione itens ao carrinho.");
+      toast.warning("Por favor, adicione itens ao carrinho.");
       return false;
     }
     if (!paymentMethod || typeof paymentMethod !== "string") {
-      alert("Por favor, selecione a forma de pagamento.");
+      toast.warning("Por favor, selecione a forma de pagamento.");
       return false;
     }
     return true;
@@ -100,8 +102,10 @@ export function Checkout() {
 
   const handleCreateOrder = async (): Promise<boolean> => {
     if (!user) {
-      alert("Faça login para finalizar o pedido.");
-      navigate("/auth?redirect=/checkout");
+      toast.info(
+        "Faça login para finalizar o pedido. Seu carrinho foi mantido."
+      );
+      navigate(buildAuthRedirectUrl());
       return false;
     }
 
@@ -128,7 +132,7 @@ export function Checkout() {
     });
 
     if (error || !order) {
-      alert(error ?? "Não foi possível registrar o pedido. Tente novamente.");
+      toast.error(error ?? "Não foi possível registrar o pedido. Tente novamente.");
       return false;
     }
 

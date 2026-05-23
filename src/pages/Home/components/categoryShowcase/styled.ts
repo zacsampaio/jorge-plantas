@@ -21,7 +21,7 @@ const accentMap = {
 };
 
 export const CategorySection = styled.section<{ $accent: Accent }>`
-  padding: 4rem 1rem;
+  padding: 4rem 0;
   background: ${(props) => accentMap[props.$accent](props.theme).bg};
   border-top: 4px solid ${(props) => accentMap[props.$accent](props.theme).border};
   border-bottom: 4px solid ${(props) => accentMap[props.$accent](props.theme).border};

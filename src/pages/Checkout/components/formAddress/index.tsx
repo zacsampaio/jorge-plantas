@@ -6,6 +6,7 @@ import { addressSchema } from "./addressSchema";
 import { setAddress } from "../../../../redux/address/slice";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "../../../../stores/toastStore";
 
 interface FormProps {
   onFormValidation: (valid: boolean) => void;
@@ -71,7 +72,7 @@ export function Form({ onFormValidation }: FormProps) {
     const cleanCep = cep.replace(/\D/g, "");
     
     if (cleanCep.length !== 8) {
-      alert("CEP deve ter 8 dígitos");
+      toast.warning("CEP deve ter 8 dígitos");
       return;
     }
 
@@ -81,7 +82,7 @@ export function Form({ onFormValidation }: FormProps) {
       const data: ViaCEPResponse = await response.json();
 
       if (data.erro) {
-        alert("CEP não encontrado. Por favor, verifique o CEP informado.");
+        toast.error("CEP não encontrado. Por favor, verifique o CEP informado.");
         setIsLoadingCep(false);
         return;
       }
@@ -96,7 +97,7 @@ export function Form({ onFormValidation }: FormProps) {
       }
     } catch (error) {
       console.error("Erro ao buscar CEP:", error);
-      alert("Erro ao buscar CEP. Tente novamente.");
+      toast.error("Erro ao buscar CEP. Tente novamente.");
     } finally {
       setIsLoadingCep(false);
     }
@@ -107,7 +108,7 @@ export function Form({ onFormValidation }: FormProps) {
     if (cepValue) {
       fetchAddressByCep(cepValue);
     } else {
-      alert("Por favor, insira um CEP.");
+      toast.warning("Por favor, insira um CEP.");
     }
   };
 

@@ -16,7 +16,8 @@ export function AuthButton() {
       type="button"
       onClick={() => navigate("/auth")}
     >
-      Entrar / Criar conta
+      <span className="auth-label-full">Entrar / Criar conta</span>
+      <span className="auth-label-short">Entrar</span>
     </AuthButtonStyled>
   );
 }

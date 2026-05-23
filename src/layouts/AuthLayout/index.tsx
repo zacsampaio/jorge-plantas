@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import logoImg from "/assets/logo-jorge-plantas.png";
+const logoImg = "/assets/logo-jorge-plantas.png";
 import { useAuth } from "../../hooks/useAuth";
 import {
   AuthCard,

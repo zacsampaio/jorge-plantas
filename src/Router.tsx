@@ -42,13 +42,13 @@ export function Router() {
       <Route path="/" element={<DefaultLayout />}>
         <Route index element={<Home />} />
         <Route path="/produtos" element={<Produtos />} />
-        <Route path="/checkout" element={<Checkout />} />
         <Route path="/confirmed" element={<Confirmed />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
 
         <Route
           element={<ProtectedRoute allowedRoles={["client", "admin"]} />}
         >
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/account" element={<AccountLayout />}>
             <Route index element={<Navigate to="/account/orders" replace />} />
             <Route path="orders" element={<AccountOrdersPage />} />

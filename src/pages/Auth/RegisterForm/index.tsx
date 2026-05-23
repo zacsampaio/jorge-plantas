@@ -14,7 +14,7 @@ import {
   RequirementItem,
 } from "../../../layouts/AuthLayout/styled";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function formatPhone(value: string): string {
   const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -28,6 +28,7 @@ function formatPhone(value: string): string {
 export function RegisterForm() {
   const { signUp, error: authError, info, clearMessages } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -67,7 +68,8 @@ export function RegisterForm() {
 
     if (!success) return;
 
-    navigate("/account/orders");
+    const redirect = searchParams.get("redirect");
+    navigate(redirect ? decodeURIComponent(redirect) : "/account/orders");
   };
 
   return (

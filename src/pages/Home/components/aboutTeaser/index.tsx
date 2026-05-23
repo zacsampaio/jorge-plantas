@@ -15,7 +15,7 @@ import {
   SectionLabel,
 } from "../../styled";
 import { AboutSectionTitle } from "./styled";
-import logoImg from "/assets/logo-jorge-plantas.png";
+const logoImg = "/assets/logo-jorge-plantas.png";
 
 export function AboutTeaserSection() {
   return (

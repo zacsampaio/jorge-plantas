@@ -9,7 +9,6 @@ import {
   ItemDolar,
   ItemTimer,
 } from "./styled";
-import confirmedImg from "../../../public/assets/Confirmed.png";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/rootReducer";
 
@@ -62,7 +61,7 @@ export function Confirmed() {
             </ConfirmedInfo>
           </InnerContainer>
         </ConfirmedAreaDelivery>
-        <img src={confirmedImg} alt="Imagem de confirmação" />
+        <img src="/assets/Confirmed.png" alt="Imagem de confirmação" />
         
       </ConfirmedArea>
     </ConfirmedContainer>

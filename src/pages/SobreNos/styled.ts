@@ -12,18 +12,8 @@ export const HeroSection = styled.section`
 `;
 
 export const HeroContent = styled.div`
-  max-width: calc(100vw - 20rem);
   width: 100%;
   margin: 0 auto;
-  padding: 0 2rem;
-
-  @media (max-width: 1090px) {
-    max-width: calc(100vw - 10rem);
-  }
-
-  @media (max-width: 768px) {
-    max-width: calc(100vw - 2rem);
-  }
 `;
 
 export const HeroTitle = styled.h1`
@@ -48,19 +38,8 @@ export const HeroSubtitle = styled.p`
 
 export const HistorySection = styled.section`
   padding: 3rem 0;
-  max-width: calc(100vw - 20rem);
   width: 100%;
   margin: 0 auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
-
-  @media (max-width: 1090px) {
-    max-width: calc(100vw - 10rem);
-  }
-
-  @media (max-width: 768px) {
-    max-width: calc(100vw - 2rem);
-  }
 `;
 
 export const SectionTitle = styled.h2`
@@ -100,22 +79,13 @@ export const ValuesGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
-  max-width: calc(100vw - 20rem);
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 2rem;
-
-  @media (max-width: 1090px) {
-    max-width: calc(100vw - 10rem);
-  }
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 768px) {
-    max-width: calc(100vw - 2rem);
     grid-template-columns: 1fr;
   }
 `;
@@ -154,18 +124,8 @@ export const MissionSection = styled.section`
 `;
 
 export const MissionContent = styled.div`
-  max-width: calc(100vw - 20rem);
   width: 100%;
   margin: 0 auto;
-  padding: 0 2rem;
-
-  @media (max-width: 1090px) {
-    max-width: calc(100vw - 10rem);
-  }
-
-  @media (max-width: 768px) {
-    max-width: calc(100vw - 2rem);
-  }
 `;
 
 export const MissionText = styled.p`
@@ -191,22 +151,13 @@ export const ServiceGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
-  max-width: calc(100vw - 20rem);
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 2rem;
-
-  @media (max-width: 1090px) {
-    max-width: calc(100vw - 10rem);
-  }
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 768px) {
-    max-width: calc(100vw - 2rem);
     grid-template-columns: 1fr;
   }
 `;

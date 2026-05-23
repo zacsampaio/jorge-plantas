@@ -7,7 +7,7 @@ export const SeeAllProductsLink = styled(Link)`
   justify-content: center;
   gap: 0.5rem;
   margin-top: 3rem;
-  padding: 1rem 2rem;
+  padding: 1rem 0;
   background: ${(props) => props.theme["green-500"]};
   color: ${(props) => props.theme.white};
   text-decoration: none;

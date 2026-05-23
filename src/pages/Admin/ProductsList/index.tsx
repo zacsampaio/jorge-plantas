@@ -55,6 +55,7 @@ export function AdminProductsListPage() {
   } = usePaginatedFetch({
     fetcher: fetchPage,
     pageSize: DEFAULT_PAGE_SIZE,
+    waitForAuth: true,
   });
 
   const handleRemove = async (id: number, name: string) => {

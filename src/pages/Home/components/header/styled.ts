@@ -1,18 +1,29 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { fullBleedSection } from "../../../../styles/layout";
 
 export const HeroSection = styled.section`
   position: relative;
-  padding: 3rem 1rem 4rem;
-  margin: 0 -1rem;
+  ${fullBleedSection}
+  padding: 2rem 0.75rem 3rem;
   background: linear-gradient(
     160deg,
     ${(props) => props.theme["green-100"]} 0%,
     ${(props) => props.theme.white} 45%,
     ${(props) => props.theme["yellow-100"]} 100%
   );
-  border-radius: 0 0 2rem 2rem;
+  border-radius: 0 0 1.25rem 1.25rem;
   overflow: hidden;
+
+  @media (min-width: 640px) {
+    padding: 2.5rem 1rem 3.5rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 3rem 1rem 4rem;
+    border-radius: 0 0 2rem 2rem;
+  }
 
   &::before {
     content: "";
@@ -50,7 +61,7 @@ export const HeaderHomeContainer = styled.div`
   min-height: 28rem;
   max-width: 72rem;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0;
 
   img {
     width: 100%;
@@ -118,7 +129,7 @@ export const HeaderHomeTitles = styled.div`
 
   h1 {
     font-family: "Baloo 2", sans-serif;
-    font-size: 3rem;
+    font-size: clamp(1.75rem, 6vw, 3rem);
     font-weight: 800;
     line-height: 130%;
     color: ${(props) => props.theme["gray-800"]};
@@ -127,7 +138,7 @@ export const HeaderHomeTitles = styled.div`
   p {
     margin: 1.5rem 0 2rem 0;
     font-family: "Roboto", sans-serif;
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 3.5vw, 1.25rem);
     line-height: 160%;
     color: ${(props) => props.theme["gray-600"]};
     max-width: 34rem;
