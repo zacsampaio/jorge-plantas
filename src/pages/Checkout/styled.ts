@@ -51,3 +51,7 @@ export const CheckoutAreaPayments = styled.div`
 `;
 
 
+
+export const CheckoutNotice = styled.div`
+  margin-bottom: 1.5rem;
+`;

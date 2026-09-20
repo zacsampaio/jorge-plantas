@@ -85,6 +85,74 @@ export async function fetchProductsPaginatedFromDb(
   );
 }
 
+export interface AdminProductFilters {
+  tag?: string | null;
+  status?: ProductStatus;
+  search?: string;
+  bestSeller?: boolean;
+}
+
+/**
+ * Listagem do painel administrativo.
+ *
+ * Vai pelo cliente autenticado, e não por publicRestGet, de propósito: a
+ * policy products_select_active só expõe produtos ativos para quem lê como
+ * anônimo. O admin precisa enxergar também os inativos, e isso só acontece
+ * quando a consulta carrega o JWT dele e cai na policy products_admin_all.
+ */
+export async function fetchAdminProductsPaginatedFromDb(
+  params: PaginationParams & AdminProductFilters = {}
+): Promise<PaginatedResult<CatalogProduct>> {
+  const { page, pageSize, from, to } = normalizePagination(params);
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return buildPaginatedResult<CatalogProduct>([], 0, page, pageSize);
+  }
+
+  let query = supabase
+    .from("products")
+    .select("*", { count: "exact" })
+    .order("id", { ascending: true });
+
+  if (params.status) {
+    query = query.eq("status", params.status);
+  }
+
+  if (params.tag) {
+    query = query.contains("tags", [params.tag]);
+  }
+
+  if (params.bestSeller) {
+    query = query.eq("best_seller", true);
+  }
+
+  // Filtra no banco, e não na página carregada: filtrar no cliente olharia
+  // só os 10 itens da página atual e daria resultado errado.
+  const search = params.search?.trim();
+  if (search) {
+    // Escapa os curingas do LIKE para o texto do usuário não virar padrão.
+    const escaped = search.replace(/[%_]/g, (match) => `\\${match}`);
+    query = query.ilike("name", `%${escaped}%`);
+  }
+
+  const { data, error, count } = await query.range(from, to);
+
+  if (error) {
+    console.error("Erro ao buscar produtos do painel:", error.message);
+    throw new Error(error.message);
+  }
+
+  const rows = (data ?? []) as ProductRow[];
+
+  return buildPaginatedResult(
+    rows.map(mapRowToProduct),
+    count ?? rows.length,
+    page,
+    pageSize
+  );
+}
+
 export async function fetchProductsFromDb(): Promise<CatalogProduct[]> {
   const query = buildProductsQuery();
   const { data, error } = await publicRestGet<ProductRow[]>(query);

@@ -1,5 +1,10 @@
 import { getSupabaseClient } from "../../lib/supabase/client";
-import type { CreateOrderInput, Order, OrderStatus } from "../../types/order";
+import type {
+  CreateOrderInput,
+  Order,
+  OrderChannel,
+  OrderStatus,
+} from "../../types/order";
 import type { PaginatedResult, PaginationParams } from "../../types/pagination";
 import {
   buildPaginatedResult,
@@ -9,7 +14,10 @@ import {
 
 interface OrderRow {
   id: string;
-  user_id: string;
+  user_id: string | null;
+  channel: OrderChannel | null;
+  customer_name: string | null;
+  customer_phone: string | null;
   status: OrderStatus;
   total: number;
   delivery_fee: number;
@@ -35,16 +43,18 @@ interface OrderItemRow {
 function mapRowToOrder(row: OrderRow, items: OrderItemRow[]): Order {
   return {
     id: row.id,
-    userId: row.user_id,
+    userId: row.user_id ?? undefined,
+    channel: row.channel ?? "online",
     createdAt: row.created_at,
     status: row.status,
     total: Number(row.total),
     deliveryFee: Number(row.delivery_fee),
     paymentMethod: row.payment_method ?? undefined,
     address: row.address ?? undefined,
-    customerName: row.profiles?.full_name,
+    // Cliente cadastrado vem do perfil; venda de balcão, do campo livre.
+    customerName: row.profiles?.full_name ?? row.customer_name ?? undefined,
     customerEmail: row.profiles?.email,
-    customerPhone: row.profiles?.phone ?? undefined,
+    customerPhone: row.profiles?.phone ?? row.customer_phone ?? undefined,
     items: items.map((item) => ({
       productId: item.product_id ?? 0,
       name: item.product_name,
@@ -196,11 +206,15 @@ export async function createOrderInDb(
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({
-      user_id: input.userId,
+      user_id: input.userId ?? null,
+      channel: input.channel ?? "online",
+      customer_name: input.customerName ?? null,
+      customer_phone: input.customerPhone ?? null,
+      status: input.status ?? "pending",
       total: input.total,
-      delivery_fee: input.deliveryFee,
+      delivery_fee: input.deliveryFee ?? 0,
       payment_method: input.paymentMethod,
-      address: input.address,
+      address: input.address ?? {},
     })
     .select("*")
     .single();

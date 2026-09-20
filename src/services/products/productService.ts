@@ -1,8 +1,10 @@
 import type { CatalogProduct, CatalogProductInput } from "../../types/catalog";
 import type { ProductStatus } from "../../redux/cart/types";
+import type { AdminProductFilters } from "./productDbService";
 import {
   createProductInDb,
   deleteProductInDb,
+  fetchAdminProductsPaginatedFromDb,
   fetchProductsFromDb,
   fetchProductsPaginatedFromDb,
   getProductByIdFromDb,
@@ -23,6 +25,13 @@ export async function fetchCatalogProductsPaginated(
   params: PaginationParams & { tag?: string | null; status?: ProductStatus } = {}
 ): Promise<PaginatedResult<CatalogProduct>> {
   return fetchProductsPaginatedFromDb(params);
+}
+
+/** Listagem do painel: inclui produtos inativos, que a leitura pública esconde. */
+export async function fetchAdminProductsPaginated(
+  params: PaginationParams & AdminProductFilters = {}
+): Promise<PaginatedResult<CatalogProduct>> {
+  return fetchAdminProductsPaginatedFromDb(params);
 }
 
 export async function getCatalogProductById(

@@ -2,7 +2,9 @@ import {
   CheckoutAreaForm,
   CheckoutComponents,
   CheckoutAreaPayments,
+  CheckoutNotice,
 } from "./styled";
+import { Alert } from "../../components/ui/Alert";
 import { Form } from "./components/formAddress";
 import { PaymentMethods } from "./components/paymentMethods";
 import { CartTotalPayments } from "./components/cartTotalPayments";
@@ -19,7 +21,7 @@ import { buildAuthRedirectUrl } from "../../utils/authRedirect";
 
 export function Checkout() {
   const [isFormValid, setIsFormValid] = useState(false);
-  const { user } = useAuth();
+  const { user, status: authStatus } = useAuth();
   const paymentMethod = useSelector(
     (state: RootState) => state.paymentMethod?.paymentMethod || ""
   );
@@ -103,14 +105,21 @@ export function Checkout() {
   const handleCreateOrder = async (): Promise<boolean> => {
     if (!user) {
       toast.info(
-        "Faça login para finalizar o pedido. Seu carrinho foi mantido."
+        "Você precisa estar logado para finalizar o pedido. Seu carrinho e endereço foram mantidos.",
+        {
+          duration: 10000,
+          action: {
+            label: "Fazer login",
+            onClick: () => navigate(buildAuthRedirectUrl()),
+          },
+        }
       );
-      navigate(buildAuthRedirectUrl());
       return false;
     }
 
     const { order, error } = await createOrder({
       userId: user.id,
+      channel: "online",
       items: products.map((item) => ({
         productId: item.id,
         name: item.name,
@@ -186,26 +195,38 @@ export function Checkout() {
   };
 
   return (
-    <CheckoutComponents>
-      <CheckoutAreaForm>
-        <h3>Complete seu pedido</h3>
-        <Form onFormValidation={handleFormValidation} />
+    <>
+      {authStatus === "unauthenticated" && (
+        <CheckoutNotice>
+          <Alert variant="info">
+            Você pode preencher o endereço e conferir o frete sem ter conta. O
+            login será pedido apenas na hora de confirmar o pedido, e o que você
+            já digitou aqui será mantido.
+          </Alert>
+        </CheckoutNotice>
+      )}
 
-        <PaymentMethods isFormValid={isFormValid} />
-      </CheckoutAreaForm>
+      <CheckoutComponents>
+        <CheckoutAreaForm>
+          <h3>Complete seu pedido</h3>
+          <Form onFormValidation={handleFormValidation} />
 
-      <CheckoutAreaPayments>
-        <h3>Plantas selecionadas</h3>
-        <CartTotalPayments
-          onConfirmOrder={() => {
-            handleOrder();
-          }}
-          valueProducts={valueProducts}
-          valueDelivery={valueDelivery}
-          totalValue={totalValue}
-          products={products}
-        />
-      </CheckoutAreaPayments>
-    </CheckoutComponents>
+          <PaymentMethods isFormValid={isFormValid} />
+        </CheckoutAreaForm>
+
+        <CheckoutAreaPayments>
+          <h3>Plantas selecionadas</h3>
+          <CartTotalPayments
+            onConfirmOrder={() => {
+              handleOrder();
+            }}
+            valueProducts={valueProducts}
+            valueDelivery={valueDelivery}
+            totalValue={totalValue}
+            products={products}
+          />
+        </CheckoutAreaPayments>
+      </CheckoutComponents>
+    </>
   );
 }

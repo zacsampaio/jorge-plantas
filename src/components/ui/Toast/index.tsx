@@ -8,6 +8,8 @@ import {
 } from "phosphor-react";
 import { useToastStore, type ToastItem } from "../../../stores/toastStore";
 import {
+  ToastActionButton,
+  ToastBody,
   ToastCard,
   ToastCloseButton,
   ToastIconWrap,
@@ -47,7 +49,20 @@ function ToastEntry({ toast }: { toast: ToastItem }) {
       <ToastIconWrap $variant={toast.variant} aria-hidden="true">
         <ToastIcon variant={toast.variant} />
       </ToastIconWrap>
-      <ToastMessage>{toast.message}</ToastMessage>
+      <ToastBody>
+        <ToastMessage>{toast.message}</ToastMessage>
+        {toast.action && (
+          <ToastActionButton
+            type="button"
+            onClick={() => {
+              toast.action?.onClick();
+              dismiss(toast.id);
+            }}
+          >
+            {toast.action.label}
+          </ToastActionButton>
+        )}
+      </ToastBody>
       <ToastCloseButton
         type="button"
         aria-label="Fechar notificação"

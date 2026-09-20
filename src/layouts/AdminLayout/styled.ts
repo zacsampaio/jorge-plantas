@@ -4,7 +4,9 @@ import { NavLink } from "react-router-dom";
 export const AdminShell = styled.div`
   display: grid;
   grid-template-columns: 260px 1fr;
-  align-items: start;
+  /* Sem align-items: start — a coluna precisa esticar até o fim da página,
+     senão a área da sidebar termina em 100dvh e o sticky sai de cena junto
+     com ela assim que a listagem passa de uma tela. */
   min-height: 100vh;
   background: ${(props) => props.theme["gray-50"] ?? props.theme["gray-100"]};
 

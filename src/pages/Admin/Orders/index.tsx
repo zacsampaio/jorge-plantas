@@ -4,6 +4,7 @@ import { EmptyState } from "../../../components/ui/EmptyState";
 import { Pagination } from "../../../components/ui/Pagination";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import {
+  ActionLink,
   AdminHeader,
   AdminTitle,
   StatusSelect,
@@ -15,7 +16,7 @@ import {
   fetchAllOrdersPaginated,
   updateOrderStatus,
 } from "../../../services/orders/orderService";
-import type { OrderStatus } from "../../../types/order";
+import { ORDER_CHANNEL_LABELS, type OrderStatus } from "../../../types/order";
 import { DEFAULT_PAGE_SIZE } from "../../../types/pagination";
 import {
   formatCurrency,
@@ -60,6 +61,7 @@ export function AdminOrdersPage() {
     <>
       <AdminHeader>
         <AdminTitle>Pedidos</AdminTitle>
+        <ActionLink to="/admin/orders/new">Novo pedido</ActionLink>
       </AdminHeader>
 
       <PageSection data-refreshing={isRefreshing ? "true" : undefined}>
@@ -79,6 +81,7 @@ export function AdminOrdersPage() {
               <thead>
                 <tr>
                   <th>Data</th>
+                  <th>Canal</th>
                   <th>Cliente</th>
                   <th>E-mail</th>
                   <th>Total</th>
@@ -90,6 +93,7 @@ export function AdminOrdersPage() {
                 {orders.map((order) => (
                   <tr key={order.id}>
                     <td>{formatOrderDate(order.createdAt)}</td>
+                    <td>{ORDER_CHANNEL_LABELS[order.channel]}</td>
                     <td>{order.customerName ?? "—"}</td>
                     <td>{order.customerEmail ?? "—"}</td>
                     <td>{formatCurrency(order.total)}</td>

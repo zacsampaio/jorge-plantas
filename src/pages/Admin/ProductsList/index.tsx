@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
 import { EmptyState } from "../../../components/ui/EmptyState";
@@ -8,7 +8,7 @@ import { Alert } from "../../../components/ui/Alert";
 import { ProductImage } from "../../../components/ProductImage";
 import { usePaginatedFetch } from "../../../hooks/usePaginatedFetch";
 import { useCatalogStore } from "../../../stores/catalogStore";
-import { fetchCatalogProductsPaginated } from "../../../services/products/productService";
+import { fetchAdminProductsPaginated } from "../../../services/products/productService";
 import { DEFAULT_PAGE_SIZE } from "../../../types/pagination";
 import { formatCurrency } from "../../../utils/format";
 import type { ProductStatus } from "../../../redux/cart/types";
@@ -16,12 +16,19 @@ import {
   ActionLink,
   AdminHeader,
   AdminTitle,
+  ClearFiltersButton,
   DeleteButton,
+  FilterBar,
+  FilterField,
+  FilterSummary,
+  SearchField,
   StatusBadge,
   StatusButton,
   Table,
   TableActions,
 } from "./styled";
+import { categories } from "../../../data/categories";
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
 import { PageSection } from "../../../layouts/AccountLayout/styled";
 
 const STATUS_LABELS: Record<ProductStatus, string> = {
@@ -36,9 +43,36 @@ export function AdminProductsListPage() {
   );
   const navigate = useNavigate();
 
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<"" | ProductStatus>("");
+  const [tag, setTag] = useState("");
+  const [onlyBestSeller, setOnlyBestSeller] = useState(false);
+
+  // O texto digitado só vira consulta depois de uma pausa, para não disparar
+  // uma requisição por tecla.
+  const debouncedSearch = useDebouncedValue(search, 350);
+
+  const hasFilters =
+    debouncedSearch.trim() !== "" || status !== "" || tag !== "" || onlyBestSeller;
+
+  const clearFilters = () => {
+    setSearch("");
+    setStatus("");
+    setTag("");
+    setOnlyBestSeller(false);
+  };
+
   const fetchPage = useCallback(
-    (page: number, pageSize: number) => fetchCatalogProductsPaginated({ page, pageSize }),
-    []
+    (page: number, pageSize: number) =>
+      fetchAdminProductsPaginated({
+        page,
+        pageSize,
+        search: debouncedSearch,
+        status: status || undefined,
+        tag: tag || undefined,
+        bestSeller: onlyBestSeller || undefined,
+      }),
+    [debouncedSearch, status, tag, onlyBestSeller]
   );
 
   const {
@@ -56,6 +90,9 @@ export function AdminProductsListPage() {
     fetcher: fetchPage,
     pageSize: DEFAULT_PAGE_SIZE,
     waitForAuth: true,
+    // Volta para a primeira página sempre que o recorte muda: a página 2 de
+    // um filtro não corresponde à página 2 de outro.
+    resetKey: `${debouncedSearch}|${status}|${tag}|${onlyBestSeller}`,
   });
 
   const handleRemove = async (id: number, name: string) => {
@@ -84,11 +121,84 @@ export function AdminProductsListPage() {
       </AdminHeader>
 
       <PageSection data-refreshing={isRefreshing ? "true" : undefined}>
+        <FilterBar>
+          <SearchField>
+            Buscar por nome
+            <input
+              type="search"
+              value={search}
+              placeholder="Ex.: samambaia"
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </SearchField>
+
+          <FilterField>
+            Status
+            <select
+              value={status}
+              onChange={(event) =>
+                setStatus(event.target.value as "" | ProductStatus)
+              }
+            >
+              <option value="">Todos</option>
+              <option value="active">Ativos</option>
+              <option value="inactive">Inativos</option>
+            </select>
+          </FilterField>
+
+          <FilterField>
+            Categoria
+            <select
+              value={tag}
+              onChange={(event) => setTag(event.target.value)}
+            >
+              <option value="">Todas</option>
+              {categories.map((category) => (
+                <option key={category.tag} value={category.tag}>
+                  {category.title}
+                </option>
+              ))}
+            </select>
+          </FilterField>
+
+          <FilterField>
+            Destaque
+            <select
+              value={onlyBestSeller ? "yes" : ""}
+              onChange={(event) => setOnlyBestSeller(event.target.value === "yes")}
+            >
+              <option value="">Todos</option>
+              <option value="yes">Só destaques</option>
+            </select>
+          </FilterField>
+
+          <FilterSummary>
+            {total} {total === 1 ? "produto" : "produtos"}
+            {hasFilters && (
+              <ClearFiltersButton type="button" onClick={clearFilters}>
+                Limpar filtros
+              </ClearFiltersButton>
+            )}
+          </FilterSummary>
+        </FilterBar>
+
         {error && <Alert variant="error">{error}</Alert>}
 
         {isInitialLoading && <Skeleton lines={5} height="3rem" />}
 
-        {!isInitialLoading && products.length === 0 && (
+        {!isInitialLoading && products.length === 0 && hasFilters && (
+          <EmptyState
+            title="Nenhum produto encontrado"
+            description="Nenhum item do catálogo combina com esses filtros."
+            action={
+              <Button variant="ghost" onClick={clearFilters}>
+                Limpar filtros
+              </Button>
+            }
+          />
+        )}
+
+        {!isInitialLoading && products.length === 0 && !hasFilters && (
           <EmptyState
             title="Nenhum produto cadastrado"
             description="Comece adicionando um novo item ao catálogo."

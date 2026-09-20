@@ -14,7 +14,7 @@ const slideIn = keyframes`
 
 export const ToastViewport = styled.div`
   position: fixed;
-  top: 1.25rem;
+  bottom: 1.25rem;
   right: 1.25rem;
   z-index: 9999;
   display: flex;
@@ -114,5 +114,36 @@ export const ToastCloseButton = styled.button`
 
   &:hover {
     opacity: 1;
+  }
+`;
+
+export const ToastBody = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+`;
+
+export const ToastActionButton = styled.button`
+  font-family: "Roboto", sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
   }
 `;

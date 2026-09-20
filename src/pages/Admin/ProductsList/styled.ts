@@ -34,3 +34,71 @@ export const StatusButton = styled.button`
     text-decoration: underline;
   }
 `;
+
+export const FilterBar = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+`;
+
+export const FilterField = styled.label`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.75rem;
+  color: ${(props) => props.theme["gray-600"]};
+
+  input,
+  select {
+    border: 1px solid ${(props) => props.theme["gray-500"]};
+    background: ${(props) => props.theme.white};
+    color: ${(props) => props.theme["gray-800"]};
+    padding: 0.5rem 0.625rem;
+    border-radius: 8px;
+    font-family: "Roboto", sans-serif;
+    font-size: 0.875rem;
+    min-width: 10rem;
+
+    &:focus {
+      outline: none;
+      border-color: ${(props) => props.theme["green-500"]};
+    }
+  }
+`;
+
+export const SearchField = styled(FilterField)`
+  flex: 1 1 16rem;
+
+  input {
+    width: 100%;
+  }
+`;
+
+export const FilterSummary = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.8125rem;
+  color: ${(props) => props.theme["gray-600"]};
+  white-space: nowrap;
+`;
+
+export const ClearFiltersButton = styled.button`
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.8125rem;
+  color: ${(props) => props.theme["green-600"]};
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: ${(props) => props.theme["gray-800"]};
+  }
+`;

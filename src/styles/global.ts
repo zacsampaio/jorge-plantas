@@ -23,12 +23,19 @@ export const GlobalStyled = createGlobalStyle`
     border: 0;
   }
 
+  /*
+    clip, e não hidden: overflow diferente de visible transforma o elemento em
+    contêiner de rolagem, e aí todo position: sticky descendente passa a se
+    referenciar a ele — que não rola — e nunca gruda. Foi o que quebrava a
+    sidebar do painel. O clip corta o transbordo horizontal do mesmo jeito,
+    sem criar o contêiner.
+  */
   html {
     font-size: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 `;

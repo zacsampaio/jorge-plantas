@@ -5,7 +5,15 @@ import { Button } from "../../../components/ui/Button";
 import { Alert } from "../../../components/ui/Alert";
 import { useAuth } from "../../../hooks/useAuth";
 import { loginSchema, type LoginFormData } from "../schemas/authSchemas";
-import { FormStack } from "../../../layouts/AuthLayout/styled";
+import {
+  ForgotPasswordLink,
+  FormStack,
+} from "../../../layouts/AuthLayout/styled";
+import {
+  defaultRouteForRole,
+  FORGOT_PASSWORD_PATH,
+} from "../../../utils/authRedirect";
+import { useAuthStore } from "../../../stores/authStore";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function LoginForm() {
@@ -29,7 +37,15 @@ export function LoginForm() {
     if (!success) return;
 
     const redirect = searchParams.get("redirect");
-    navigate(redirect ? decodeURIComponent(redirect) : "/account/orders");
+    if (redirect) {
+      navigate(decodeURIComponent(redirect));
+      return;
+    }
+
+    // Lido do store, não do hook: o papel só existe depois que o signIn
+    // acima gravou a sessão, e o valor do render atual ainda é o antigo.
+    const role = useAuthStore.getState().session?.user.role;
+    navigate(defaultRouteForRole(role));
   };
 
   return (
@@ -53,6 +69,10 @@ export function LoginForm() {
         error={errors.password?.message}
         {...register("password")}
       />
+
+      <ForgotPasswordLink to={FORGOT_PASSWORD_PATH}>
+        Esqueci minha senha
+      </ForgotPasswordLink>
 
       <Button type="submit" fullWidth isLoading={isSubmitting}>
         Entrar

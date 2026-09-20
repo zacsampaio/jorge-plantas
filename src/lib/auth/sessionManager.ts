@@ -27,6 +27,7 @@ export function clearAuthState() {
     session: null,
     status: "unauthenticated",
     error: null,
+    recoveryMode: false,
   });
 }
 

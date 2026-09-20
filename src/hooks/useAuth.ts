@@ -17,6 +17,10 @@ export function useAuth() {
   const signUp = useAuthStore((state) => state.signUp);
   const signOut = useAuthStore((state) => state.signOut);
   const updateProfile = useAuthStore((state) => state.updateProfile);
+  const requestPasswordReset = useAuthStore(
+    (state) => state.requestPasswordReset
+  );
+  const updatePassword = useAuthStore((state) => state.updatePassword);
   const clearMessages = useAuthStore((state) => state.clearMessages);
 
   return {
@@ -31,6 +35,8 @@ export function useAuth() {
     signUp,
     signOut,
     updateProfile,
+    requestPasswordReset,
+    updatePassword,
     clearMessages,
   };
 }

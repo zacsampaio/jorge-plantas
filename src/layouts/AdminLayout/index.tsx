@@ -1,5 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { Package, ShoppingBag, Users, Storefront } from "phosphor-react";
+import {
+  ChartLineUp,
+  Package,
+  ShoppingBag,
+  Users,
+  Storefront,
+} from "phosphor-react";
 const logoImg = "/assets/logo-jorge-plantas.png";
 import {
   AdminContent,
@@ -22,6 +28,10 @@ export function AdminLayout() {
         </SidebarBrand>
 
         <SidebarNav>
+          <AdminNavLink to="/admin" end>
+            <ChartLineUp size={20} weight="duotone" aria-hidden="true" />
+            Visão geral
+          </AdminNavLink>
           <AdminNavLink to="/admin/products">
             <Package size={20} weight="duotone" aria-hidden="true" />
             Produtos

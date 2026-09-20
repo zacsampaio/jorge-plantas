@@ -20,7 +20,16 @@ interface AuthState {
   signUp: (data: RegisterInput) => Promise<boolean>;
   signOut: () => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<boolean>;
+  requestPasswordReset: (email: string) => Promise<boolean>;
+  updatePassword: (password: string) => Promise<boolean>;
   clearMessages: () => void;
+  /**
+   * Ligado quando o link de recuperação abre o app. A sessão criada pelo
+   * link só pode trocar a senha: enquanto isso o resto do app fica
+   * bloqueado, para um link vazado não virar acesso à conta.
+   */
+  recoveryMode: boolean;
+  setRecoveryMode: (value: boolean) => void;
 }
 
 const AUTH_SESSION_TIMEOUT_MS = 2500;
@@ -52,6 +61,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   bootstrapped: false,
   error: null,
   info: null,
+  recoveryMode: false,
 
   initialize: async () => {
     if (initializePromise) return initializePromise;
@@ -152,6 +162,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
     return true;
   },
+
+  requestPasswordReset: async (email) => {
+    set({ status: "loading", error: null, info: null });
+    const { error } = await authService.requestPasswordReset(email);
+
+    if (error) {
+      set({ status: "unauthenticated", error: error.message });
+      return false;
+    }
+
+    // Mensagem deliberadamente ambígua: vale tanto para e-mail cadastrado
+    // quanto para inexistente, para não expor quem tem conta.
+    set({
+      status: "unauthenticated",
+      info: "Se existir uma conta com esse e-mail, enviamos o link de recuperação. Verifique também a caixa de spam.",
+    });
+    return true;
+  },
+
+  updatePassword: async (password) => {
+    set({ error: null, info: null });
+    const { error } = await authService.updatePassword(password);
+
+    if (error) {
+      set({ error: error.message });
+      return false;
+    }
+
+    set({ recoveryMode: false });
+    return true;
+  },
+
+  setRecoveryMode: (value) => set({ recoveryMode: value }),
 
   clearMessages: () => set({ error: null, info: null }),
 }));

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const AuthLayoutContainer = styled.div`
@@ -41,12 +42,25 @@ export const AuthSubtitle = styled.p`
   margin-bottom: 1.5rem;
 `;
 
-export const BackLink = styled.a`
+export const BackLink = styled(Link)`
   display: block;
   text-align: center;
   margin-top: 1.5rem;
   font-family: "Roboto", sans-serif;
   font-size: 0.875rem;
+  color: ${(props) => props.theme["green-500"]};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const ForgotPasswordLink = styled(Link)`
+  align-self: flex-end;
+  margin-top: -0.25rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.8125rem;
   color: ${(props) => props.theme["green-500"]};
   text-decoration: none;
 

@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "upload:images": "node scripts/upload-product-images.mjs",
-    "check:env": "node scripts/check-env.mjs"
+    "check:env": "node scripts/check-env.mjs",
+    "seed:demo": "node scripts/seed-demo-data.mjs",
+    "seed:demo:clean": "node scripts/seed-demo-data.mjs --clean"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",

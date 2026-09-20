@@ -5,6 +5,7 @@ import {
   isSupabaseConfigured,
 } from "../../lib/supabase/config";
 import { forceSignOut } from "../../lib/auth/sessionManager";
+import { PASSWORD_RESET_PATH } from "../../utils/authRedirect";
 import type { IAuthService } from "./types";
 import {
   buildSessionFromAuthUser,
@@ -155,6 +156,58 @@ export const supabaseAuthService: IAuthService = {
     await forceSignOut({ manual: true });
   },
 
+  async requestPasswordReset(email: string) {
+    const supabase = getSupabaseClient();
+    if (!supabase || !isSupabaseConfigured()) {
+      return { error: notConfiguredResult().error };
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}${PASSWORD_RESET_PATH}`,
+    });
+
+    // Erro de e-mail inexistente ou de rate limit não sobe para a tela:
+    // a resposta ao usuário é sempre a mesma, para não revelar quais
+    // endereços possuem conta. Só falha de configuração é exibida.
+    if (error) {
+      const mapped = mapSupabaseAuthError(error, "requestPasswordReset");
+      if (mapped.code === "AUTH_NOT_CONFIGURED") {
+        return { error: mapped };
+      }
+    }
+
+    return { error: null };
+  },
+
+  async updatePassword(password: string) {
+    const supabase = getSupabaseClient();
+    if (!supabase || !isSupabaseConfigured()) {
+      return { error: notConfiguredResult().error };
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      return {
+        error: {
+          code: "VALIDATION_ERROR" as const,
+          message:
+            "Seu link de recuperação expirou ou já foi usado. Peça um novo para continuar.",
+        },
+      };
+    }
+
+    const { error } = await supabase.auth.updateUser({ password });
+
+    if (error) {
+      return { error: mapSupabaseAuthError(error, "updatePassword") };
+    }
+
+    return { error: null };
+  },
+
   async getSession(): Promise<Session | null> {
     const supabase = getSupabaseClient();
     if (!supabase || !isSupabaseConfigured()) return null;
@@ -182,17 +235,21 @@ export const supabaseAuthService: IAuthService = {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, authSession) => {
-      if (!authSession?.user) {
-        callback(null);
-        return;
-      }
+    } = supabase.auth.onAuthStateChange((_event, authSession) => {
+      // Adiado pelo mesmo motivo do listener em lib/supabase/authListener.ts:
+      // chamar o Supabase de dentro do callback trava o lock interno de auth.
+      window.setTimeout(async () => {
+        if (!authSession?.user) {
+          callback(null);
+          return;
+        }
 
-      const session = await buildSessionFromAuthUser(
-        authSession.user.id,
-        authSession.access_token
-      );
-      callback(session);
+        const session = await buildSessionFromAuthUser(
+          authSession.user.id,
+          authSession.access_token
+        );
+        callback(session);
+      }, 0);
     });
 
     return () => subscription.unsubscribe();
